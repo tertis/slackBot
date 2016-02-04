@@ -1,0 +1,13 @@
+{
+  "name": "application-name",
+  "version": "0.0.1",
+  "author": "tertis",
+  "main": "app.js",
+  "description": "",
+  "dependencies": {
+    "body-parser": "^1.10.0",
+    "express": "^4.10.4",
+    "request": "^2.49.0",
+    "slack-node": "latest"
+  }
+}
