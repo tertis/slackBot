@@ -1,4 +1,4 @@
-var request = require('request');
+var Util = require('./SlackUtil');
 
 module.exports = function (req, res, next) {
     // default roll is 2d6
@@ -17,8 +17,9 @@ module.exports = function (req, res, next) {
             return res.status(200).send('<number> ( 1 - 999)');
         }
     }
-    var currentRoll = roll(1, die);
+    var currentRoll = Util.roll(1, die);
 
+    console.log('roll' + currentRoll);
     // write response message and add to payload
     botPayload.text = '_' + req.body.user_name + '_님이 주사위를 굴려 *' + currentRoll + '* 가 나왔습니다. ( 1 - ' + die + ' )';
 
@@ -27,7 +28,7 @@ module.exports = function (req, res, next) {
     botPayload.icon_emoji = ':game_die:';
 
     // send dice roll
-    send(botPayload, function (error, status, body) {
+    Util.send(botPayload, function (error, status, body) {
         if (error) {
             return next(error);
 
@@ -38,28 +39,5 @@ module.exports = function (req, res, next) {
         } else {
             return res.status(200).end();
         }
-    });
-}
-
-
-function roll (min, max) {
-    return Math.floor(Math.random() * (max - min + 1) + min);
-}
-
-
-function send (payload, callback) {
-    var path = process.env.INCOMING_WEBHOOK_PATH;
-    var uri = 'https://hooks.slack.com/services' + path;
-
-    request({
-        uri: uri,
-        method: 'POST',
-        body: JSON.stringify(payload)
-    }, function (error, response, body) {
-        if (error) {
-            return callback(error);
-        }
-
-        callback(null, response.statusCode, body);
     });
 }

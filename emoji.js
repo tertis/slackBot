@@ -1,7 +1,7 @@
 /**
  * Created by hyundong.kim on 2015-12-10.
  */
-var request = require('request');
+var Util = require('./SlackUtil');
 
 module.exports.common = function (req, res, next) {
     findEmoji(req, res, next, SendEmoji)
@@ -23,7 +23,7 @@ function SendEmoji(req, res, next, count) {
     botPayload.icon_emoji = ':smile_ca:';
 
     // send dice roll
-    send(botPayload, function (error, status, body) {
+    Util.send(botPayload, function (error, status, body) {
         if (error) {
             return next(error);
 
@@ -80,27 +80,6 @@ module.exports.dogSound = function (req, res, next) {
         } else {
             return res.status(200).end();
         }
-    });
-}
-
-function roll (min, max) {
-    return Math.floor(Math.random() * (max - min + 1) + min);
-}
-
-function send (payload, callback) {
-    var path = process.env.INCOMING_WEBHOOK_PATH;
-    var uri = 'https://hooks.slack.com/services' + path;
-
-    request({
-        uri: uri,
-        method: 'POST',
-        body: JSON.stringify(payload)
-    }, function (error, response, body) {
-        if (error) {
-            return callback(error);
-        }
-
-        callback(null, response.statusCode, body);
     });
 }
 

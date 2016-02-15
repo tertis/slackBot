@@ -21,7 +21,6 @@ app.post('/roll', dicebot);
 app.post('/bob', bobbot);
 // emojiBot
 app.post('/emojifrog', emoji.frog);
-app.post('/emojidog', emoji.dogSound);
 app.post('/emoji', emoji.common);
 
 // basic error handler
