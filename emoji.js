@@ -2,9 +2,18 @@
  * Created by hyundong.kim on 2015-12-10.
  */
 var Util = require('./SlackUtil');
+var request = require('request');
 
 module.exports.common = function (req, res, next) {
     findEmoji(req, res, next, SendEmoji)
+}
+
+module.exports.listEmoji = function (req, res, next) {
+    listEmoji(req, res, next);
+}
+
+module.exports.test = function (){
+    Util.test();
 }
 
 function SendEmoji(req, res, next, count) {
@@ -45,8 +54,7 @@ module.exports.frog = function (req, res, next) {
     botPayload.channel = req.body.channel_id;
     botPayload.icon_emoji = ':smile_ca:';
 
-    // send dice roll
-    send(botPayload, function (error, status, body) {
+    Util.send(botPayload, function (error, status, body) {
         if (error) {
             return next(error);
 
@@ -69,7 +77,7 @@ module.exports.dogSound = function (req, res, next) {
     botPayload.icon_emoji = ':smile_ca:';
 
     // send dice roll
-    send(botPayload, function (error, status, body) {
+    Util.send(botPayload, function (error, status, body) {
         if (error) {
             return next(error);
 
@@ -101,5 +109,49 @@ function findEmoji(req, res, next, callback) {
             }
         }
         if (count > 0) { callback(req, res, next, count); }
+    })
+}
+
+function listEmoji(req, res, next) {
+    var uri = process.env.EMOJI_TOKEN;
+
+    // 일단 리스트 받아옴
+    request({
+        uri: uri,
+        method: 'POST',
+    }, function (error, response, body) {
+        if (error) { return callback(error); }
+        var data = JSON.parse(body);
+        var list = {};
+
+        for (var e in data.emoji) {
+            if(e.includes("_")) {
+                var strArr = e.split('_');
+                list[strArr[0]] = '1';
+            }
+        }
+
+        var botPayload = {};
+        botPayload.username = 'emojiBot';
+        botPayload.channel = req.body.channel_id;
+        botPayload.icon_emoji = ':smile_ca:';
+        botPayload.text = '';
+
+        for (var s in list) {
+            botPayload.text += s + ', '; 
+        }
+
+        Util.send(botPayload, function (error, status, body) {
+        if (error) {
+            return next(error);
+
+        } else if (status !== 200) {
+            // inform user that our Incoming WebHook failed
+            return next(new Error('Incoming WebHook: ' + status + ' ' + body));
+
+        } else {
+            return res.status(200).end();
+        }
+      });
     })
 }

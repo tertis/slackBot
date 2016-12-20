@@ -23,3 +23,7 @@ module.exports.send = function(payload, callback) {
         callback(null, response.statusCode, body);
     });
 }
+
+module.exports.test = function() {
+    console.log('SlackUtil test');
+}

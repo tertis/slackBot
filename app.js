@@ -22,6 +22,9 @@ app.post('/bob', bobbot);
 // emojiBot
 app.post('/emojifrog', emoji.frog);
 app.post('/emoji', emoji.common);
+app.post('/emojilist', emoji.listEmoji);
+
+app.get('/emojitest', emoji.test);
 
 // basic error handler
 app.use(function (err, req, res, next) {
