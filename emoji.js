@@ -84,7 +84,7 @@ module.exports.dogSound = function (req, res, next) {
 }
 
 function findEmoji(req, res, next, callback) {
-    var uri = 'https://slack.com/api/emoji.list?token=xoxp-3516395674-3516395676-6894561715-9cffb6&pretty=1';
+    var uri = process.env.EMOJI_TOKEN;
 
     // 일단 리스트 받아옴
     request({
